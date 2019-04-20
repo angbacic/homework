@@ -6,7 +6,7 @@ const router = new Router()
 
 router.get('/playlists/:id/songs', (req, res, next) => {
     Song
-    .findById(req.params.id, { include: [Playlist] })
+    .findByPk(req.params.id, { include: [Playlist] })
       .then(song => {
         if (!song) {
           return res.status(404).send({
