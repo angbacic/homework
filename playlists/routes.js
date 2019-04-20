@@ -6,25 +6,20 @@ const router = new Router()
 router.get('/playlists', (req, res, next) => {
     const limit = req.query.limit || 25
     const offset = req.query.offset || 0
-  
-    Playlist
-      .count()
-      .then(total => {
-        Playlist
-          .findAll({
-            limit, offset
-          })
-          .then(playlists => {
+
+  Promise.all([
+    Playlist.count(),
+    Playlist.findAll({limit, offset})])
+          .then(([total, playlists]) => {
             res.send({ playlists, total })
           })
           .catch(error => next(error))
   })
-})
-router.get('playlists/:id', (req, res, next)=>{
-   Playlist
-        .findByPk(req.params.id)
-        .then(playlist=> {
-            if (!playlist){
+
+router.get('/playlists/:id', (req, res, next)=>{
+   Playlist.findByPk(req.params.id)
+           .then(playlist => {
+             if (!playlist){
                 return res.status(404).send({
                     message:`Playlist does not exist`
                 })            
@@ -34,7 +29,7 @@ router.get('playlists/:id', (req, res, next)=>{
     .catch(error => next(error))
 })
 
-router.post('/playlists', (req,res,next)=>{
+router.post('/playlists', (req, res, next)=>{
     Playlist
         .create(req.body)
         .then(playlist =>{
