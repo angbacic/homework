@@ -18,13 +18,11 @@ router.get('/playlists', (req, res, next) => {
             res.send({ playlists, total })
           })
           .catch(error => next(error))
-      })
-      .catch(error => next(error))
   })
-  
+})
 router.get('playlists/:id', (req, res, next)=>{
    Playlist
-        .findById(req.params.id)
+        .findByPk(req.params.id)
         .then(playlist=> {
             if (!playlist){
                 return res.status(404).send({
@@ -41,7 +39,7 @@ router.post('/playlists', (req,res,next)=>{
         .create(req.body)
         .then(playlist =>{
             if (!playlist){
-                return res.status(404).send({
+                 return res.status(404).send({
                     message: `Playlist does not exist`
             })
         }
@@ -54,7 +52,7 @@ router.post('/playlists', (req,res,next)=>{
 
 router.delete('/playlists/:id', (req, res, next) => {
     Playlist
-      .findById(req.params.id)
+      .findByPk(req.params.id)
       .then(playlist => {
         if (!playlist) {
           return res.status(404).send({
